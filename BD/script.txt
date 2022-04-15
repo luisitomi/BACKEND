@@ -1,0 +1,557 @@
+CREATE SCHEMA test;
+
+CREATE TABLE [test].[User] (
+	Id smallint IDENTITY(1,1) NOT NULL,
+	Name varchar(200) NOT NULL,
+	UserName varchar(50) not null,
+	Password varbinary(max) not null,
+	TypeId int not null,
+	Active int not null,
+	UserCreate int not null,
+	DateCreate datetime not null,
+	UserUpdate int null,
+	DateUpdate datetime null,
+	CONSTRAINT PK_User PRIMARY KEY (Id)
+);
+
+INSERT INTO [test].[User] SELECT 'admin','admin',Cast('5994471abb01112afcc18159f6cc74b4f511b99806da59b3caf5a9c173cacfc5'As varbinary(max)),1,1,1,getdate(),null,null;
+
+CREATE PROC [test].[SP_POST_INSERT_USER](
+	@Name varchar(200),
+	@UserName varchar(50),
+	@Password varchar(MAX),
+	@TypeId int,
+	@UserId int,
+	@Success int OUTPUT,
+	@Message varchar(max) OUTPUT
+)
+AS
+BEGIN TRY
+	BEGIN TRANSACTION
+		
+		SET @Success = 0;
+		SET @Message = '';		
+	
+		--Registrando Información
+		INSERT INTO [test].[User]
+		SELECT @Name, @UserName, Cast(@Password As varbinary(max)), @TypeId, 1, @UserId, GETDATE(), NULL, NULL; 
+				
+		--Respuesta del todo el proceso
+		SET @Success = 1;
+		SET @Message = 'OK';
+		
+		
+	COMMIT;
+END TRY
+BEGIN CATCH
+	SET @Success = 0;  
+	SET @Message = 'LÍNEA: ' + CAST(ERROR_LINE() AS VARCHAR(200)) + ' ERROR: ' + ERROR_MESSAGE()
+	ROLLBACK;  
+END CATCH
+
+CREATE PROC [test].[SP_PUT_UPDATE_USER](
+	@Id int,
+	@Name varchar(200),
+	@UserName varchar(50),
+	@Password varchar(MAX),
+	@UserId int,
+	@Success int OUTPUT,
+	@Message varchar(max) OUTPUT
+)
+AS
+BEGIN TRY
+	BEGIN TRANSACTION
+		
+		SET @Success = 0;
+		SET @Message = '';		
+	
+		--Actualizando Información
+		UPDATE
+			[test].[User]
+		SET
+			Name = @Name,
+			UserName = @UserName,
+			Password = Cast(@Password As varbinary(max)),
+			UserUpdate = @UserId,
+			DateUpdate = GETDATE()
+		WHERE
+			Id = @Id;
+				
+		--Respuesta del todo el proceso
+		SET @Success = 1;
+		SET @Message = 'OK';
+		
+		
+	COMMIT;
+END TRY
+BEGIN CATCH
+	SET @Success = 0;  
+	SET @Message = 'LÍNEA: ' + CAST(ERROR_LINE() AS VARCHAR(200)) + ' ERROR: ' + ERROR_MESSAGE()
+	ROLLBACK;  
+END CATCH
+
+CREATE PROC [test].[SP_DELETE_DELETE_USER](
+	@Id int,
+	@UserId int,
+	@Success int OUTPUT,
+	@Message varchar(max) OUTPUT
+)
+AS
+BEGIN TRY
+	BEGIN TRANSACTION
+		
+		SET @Success = 0;
+		SET @Message = '';		
+	
+		--Actualizando Información
+		UPDATE
+			[test].[User]
+		SET
+			Active = 2,
+			UserUpdate = @UserId,
+			DateUpdate = GETDATE()
+		WHERE
+			Id = @Id;
+				
+		--Respuesta del todo el proceso
+		SET @Success = 1;
+		SET @Message = 'OK';
+		
+		
+	COMMIT;
+END TRY
+BEGIN CATCH
+	SET @Success = 0;  
+	SET @Message = 'LÍNEA: ' + CAST(ERROR_LINE() AS VARCHAR(200)) + ' ERROR: ' + ERROR_MESSAGE()
+	ROLLBACK;  
+END CATCH
+
+CREATE PROC [test].[SP_GET_INFORMATION_USER] (
+	@UserName varchar(50),
+	@Password varchar(max)
+)
+AS
+BEGIN
+	SELECT
+		u.Id,
+		u.UserName,
+		u.Name
+	FROM
+		[test].[User] u
+	WHERE
+		u.Active = 1
+	AND
+		u.UserName  = @UserName
+	AND
+		u.Password = Cast(@Password As varbinary(max));
+		
+END
+
+CREATE PROC [test].[SP_GET_USER] (
+	@Name varchar(50)
+)
+AS
+BEGIN
+	SELECT
+		u.Id,
+		u.UserName,
+		u.Name,
+		CASE WHEN u.Active = 1 THEN 'Activo' ELSE 'Desactivado' END Status
+	FROM
+		[test].[User] u
+	WHERE
+		u.Active != 2
+	AND
+		u.Name LIKE '%'+@Name+'%'
+		
+END
+
+CREATE TABLE [test].[Product] (
+	Id smallint IDENTITY(1,1) NOT NULL,
+	Name varchar(200) NOT NULL,
+	Price decimal(18,2) not null,
+	Active int not null,
+	UserCreate int not null,
+	DateCreate datetime not null,
+	UserUpdate int null,
+	DateUpdate datetime null,
+	CONSTRAINT PK_Product PRIMARY KEY (Id)
+);
+
+CREATE PROC [test].[SP_POST_INSERT_PRODUCT](
+	@Name varchar(200),
+	@Price decimal(18,2),
+	@UserId int,
+	@Success int OUTPUT,
+	@Message varchar(max) OUTPUT
+)
+AS
+BEGIN TRY
+	BEGIN TRANSACTION
+		
+		SET @Success = 0;
+		SET @Message = '';		
+	
+		--Registrando Información
+		INSERT INTO [test].[Product]
+		SELECT @Name, @Price, 1, @UserId, GETDATE(), NULL, NULL; 
+				
+		--Respuesta del todo el proceso
+		SET @Success = 1;
+		SET @Message = 'OK';
+		
+		
+	COMMIT;
+END TRY
+BEGIN CATCH
+	SET @Success = 0;  
+	SET @Message = 'LÍNEA: ' + CAST(ERROR_LINE() AS VARCHAR(200)) + ' ERROR: ' + ERROR_MESSAGE()
+	ROLLBACK;  
+END CATCH
+
+CREATE PROC [test].[SP_PUT_UPDATE_PRODUCT](
+	@Id int,
+	@Name varchar(200),
+	@Price decimal(18,2),
+	@UserId int,
+	@Success int OUTPUT,
+	@Message varchar(max) OUTPUT
+)
+AS
+BEGIN TRY
+	BEGIN TRANSACTION
+		
+		SET @Success = 0;
+		SET @Message = '';		
+	
+		--Actualizando Información
+		UPDATE
+			[test].[Product]
+		SET
+			Name = @Name,
+			Price = @Price,
+			UserUpdate = @UserId,
+			DateUpdate = GETDATE()
+		WHERE
+			Id = @Id;
+				
+		--Respuesta del todo el proceso
+		SET @Success = 1;
+		SET @Message = 'OK';
+		
+		
+	COMMIT;
+END TRY
+BEGIN CATCH
+	SET @Success = 0;  
+	SET @Message = 'LÍNEA: ' + CAST(ERROR_LINE() AS VARCHAR(200)) + ' ERROR: ' + ERROR_MESSAGE()
+	ROLLBACK;  
+END CATCH
+
+CREATE PROC [test].[SP_DELETE_DELETE_PRODUCT](
+	@Id int,
+	@UserId int,
+	@Success int OUTPUT,
+	@Message varchar(max) OUTPUT
+)
+AS
+BEGIN TRY
+	BEGIN TRANSACTION
+		
+		SET @Success = 0;
+		SET @Message = '';		
+	
+		--Actualizando Información
+		UPDATE
+			[test].[Product]
+		SET
+			Active = 2,
+			UserUpdate = @UserId,
+			DateUpdate = GETDATE()
+		WHERE
+			Id = @Id;
+				
+		--Respuesta del todo el proceso
+		SET @Success = 1;
+		SET @Message = 'OK';
+		
+		
+	COMMIT;
+END TRY
+BEGIN CATCH
+	SET @Success = 0;  
+	SET @Message = 'LÍNEA: ' + CAST(ERROR_LINE() AS VARCHAR(200)) + ' ERROR: ' + ERROR_MESSAGE()
+	ROLLBACK;  
+END CATCH
+
+CREATE PROC [test].[SP_GET_PRODUCT] (
+	@Name varchar(50)
+)
+AS
+BEGIN
+	SELECT
+		p.Id,
+		p.Price,
+		p.Name,
+		CASE WHEN p.Active = 1 THEN 'Activo' ELSE 'Desactivado' END Status
+	FROM
+		[test].[Product] p
+	WHERE
+		p.Active != 2
+	AND
+		p.Name LIKE '%'+@Name+'%'
+		
+END
+
+CREATE TABLE [test].[Sale] (
+	Id smallint IDENTITY(1,1) NOT NULL,
+	Active int not null,
+	UserCreate int not null,
+	DateCreate datetime not null,
+	UserUpdate int null,
+	DateUpdate datetime null,
+	CONSTRAINT PK_Sale PRIMARY KEY (Id)
+);
+
+CREATE TABLE [test].[DetailSale] (
+	Id smallint IDENTITY(1,1) NOT NULL,
+	SaleId smallint NOT NULL,
+	ProductId smallint not null,
+	[Count] int not null,
+	Active int not null,
+	UserCreate int not null,
+	DateCreate datetime not null,
+	UserUpdate int null,
+	DateUpdate datetime null,
+	CONSTRAINT PK_DetailSale PRIMARY KEY (Id),
+	CONSTRAINT PK_DetailSale_Product FOREIGN KEY (ProductId) REFERENCES test.[Product](Id),
+	CONSTRAINT PK_DetailSale_Sale FOREIGN KEY (SaleId) REFERENCES test.[Sale](Id)
+);
+
+CREATE PROC [test].[SP_POST_INSERT_SALE](
+	@UserId int,
+	@ListItemsXml xml,
+	@Success int OUTPUT,
+	@Message varchar(max) OUTPUT
+)
+AS
+	DECLARE @Identity INT
+BEGIN TRY
+	BEGIN TRANSACTION
+		
+		SET @Success = 0;
+		SET @Message = '';
+	
+		--Insertando información
+		INSERT INTO [test].[Sale] SELECT 1, @UserId, GETDATE() , null, null;
+		SET @Identity = SCOPE_IDENTITY();
+				
+		--Agregando nuevo registro a la tabla
+		INSERT INTO [test].[DetailSale]
+		SELECT
+			@Identity [SaleId],
+			XCol.value('(ProductId)[1]', 'INT') [ProductId],
+			XCol.value('(Count)[1]', 'INT') [Count],
+			1 Active,
+			@UserId UserCreated ,
+			GETDATE() DateCreate,
+			NULL UserUpdated ,
+			NULL DateUpdate
+		FROM
+			@ListItemsXml.nodes('/ArrayOfDetailSaleCommand/DetailSaleCommand') AS XTbl(XCol);
+				
+		
+		--Respuesta del todo el proceso
+		SET @Success = 1;
+		SET @Message = 'OK';
+		
+		
+	COMMIT;
+END TRY
+BEGIN CATCH
+	SET @Success = 0;  
+	SET @Message = 'LÍNEA: ' + CAST(ERROR_LINE() AS VARCHAR(200)) + ' ERROR: ' + ERROR_MESSAGE()
+	ROLLBACK;  
+END CATCH
+
+CREATE PROC [test].[SP_PUT_UPDATE_SALE](
+	@Id int,
+	@UserId int,
+	@ListItemsXml xml,
+	@Success int OUTPUT,
+	@Message varchar(max) OUTPUT
+)
+AS
+	DECLARE @IdUser int
+	DECLARE @Identity INT
+BEGIN TRY
+	BEGIN TRANSACTION
+		
+		SET @Success = 0;
+		SET @Message = '';
+		SET @IdUser = (SELECT s.[UserCreate]  FROM [test].[Sale] s WHERE s.Id = @Id);
+	
+		--Modificando información
+		UPDATE
+			[test].[Sale]
+		SET
+			UserUpdate = @UserId,
+			DateUpdate = GETDATE()
+		WHERE
+			Id = @Id;
+		
+		UPDATE
+			[test].[DetailSale]
+		SET
+			UserUpdate = @UserId,
+			DateUpdate = GETDATE(),
+			Active = 0
+		WHERE
+			SaleId  = @Id;
+		
+	
+		--Agregando nuevo registro a la tabla
+		INSERT INTO [test].[DetailSale]
+		SELECT
+			@Id [SaleId],
+			XCol.value('(ProductId)[1]', 'INT') [ProductId],
+			XCol.value('(Count)[1]', 'INT') [Count],
+			1 Active,
+			@IdUser UserCreated ,
+			GETDATE() DateCreate,
+			NULL UserUpdated ,
+			NULL DateUpdate
+		FROM
+			@ListItemsXml.nodes('/ArrayOfDetailSaleCommand/DetailSaleCommand') AS XTbl(XCol);
+				
+		
+		--Respuesta del todo el proceso
+		SET @Success = 1;
+		SET @Message = 'OK';
+		
+		
+	COMMIT;
+END TRY
+BEGIN CATCH
+	SET @Success = 0;  
+	SET @Message = 'LÍNEA: ' + CAST(ERROR_LINE() AS VARCHAR(200)) + ' ERROR: ' + ERROR_MESSAGE()
+	ROLLBACK;  
+END CATCH
+
+CREATE PROC [test].[SP_DELETE_DELETE_SALE](
+	@Id int,
+	@UserId int,
+	@Success int OUTPUT,
+	@Message varchar(max) OUTPUT
+)
+AS
+	DECLARE @Identity INT
+BEGIN TRY
+	BEGIN TRANSACTION
+		
+		SET @Success = 0;
+		SET @Message = '';
+	
+		--Modificando información
+		UPDATE
+			[test].[Sale]
+		SET
+			UserUpdate = @UserId,
+			DateUpdate = GETDATE(),
+			Active = 2
+		WHERE
+			Id = @Id;
+		
+		UPDATE
+			[test].[DetailSale]
+		SET
+			UserUpdate = @UserId,
+			DateUpdate = GETDATE(),
+			Active = 2
+		WHERE
+			SaleId  = @Id;
+				
+		
+		--Respuesta del todo el proceso
+		SET @Success = 1;
+		SET @Message = 'OK';
+		
+		
+	COMMIT;
+END TRY
+BEGIN CATCH
+	SET @Success = 0;  
+	SET @Message = 'LÍNEA: ' + CAST(ERROR_LINE() AS VARCHAR(200)) + ' ERROR: ' + ERROR_MESSAGE()
+	ROLLBACK;  
+END CATCH
+
+CREATE PROC [test].[SP_GET_SALE] (
+	@Id int
+)
+AS
+BEGIN
+	SELECT
+		CONCAT('CMP - ',RIGHT(CONCAT('000000',s.Id),6)) Id,
+		u.Name ,
+		s.DateCreate [Register],
+		CASE WHEN s.Active = 1 THEN 'Completado' ELSE CASE WHEN s.Active = 2 THEN 'Eliminado' ELSE 'Cancelado' END END Status,
+		ds.Id DesatilSaleId,
+		ds.Count,
+		p.Name ProductName,
+		p.Price 
+	FROM
+		[test].[Sale] s
+	INNER JOIN
+		[test].[User] u 
+	ON
+		s.UserCreate = u.Id 
+	INNER JOIN
+		[test].[DetailSale] ds 
+	ON
+		ds.SaleId = s.Id 
+	INNER JOIN
+		[test].[Product] p 
+	ON
+		p.Id = ds.ProductId 
+	AND
+		RIGHT(CONCAT('000000',s.Id),6) LIKE '%'+RIGHT(CONCAT('000000',@Id),6)+'%'
+	WHERE
+		ds.Active = 1
+		
+END
+
+ALTER PROC [test].[SP_GET_SALE_BYID] (
+	@Id int
+)
+AS
+BEGIN
+
+	SELECT
+		CONCAT('CMP - ',RIGHT(CONCAT('000000',s.Id),6)) Id,
+		u.Name ,
+		s.DateCreate [Register],
+		CASE WHEN s.Active = 1 THEN 'Completado' ELSE CASE WHEN s.Active = 2 THEN 'Eliminado' ELSE 'Cancelado' END END Status,
+		ds.Id DesatilSaleId,
+		ds.Count,
+		p.Name ProductName,
+		p.Price 
+	FROM
+		[test].[Sale] s
+	INNER JOIN
+		[test].[User] u 
+	ON
+		s.UserCreate = u.Id 
+	INNER JOIN
+		[test].[DetailSale] ds 
+	ON
+		ds.SaleId = s.Id 
+	INNER JOIN
+		[test].[Product] p 
+	ON
+		p.Id = ds.ProductId 
+	AND
+		s.UserCreate  = @Id
+	WHERE
+		ds.Active = 1
+		
+END

@@ -1,0 +1,83 @@
+{
+    "message": "",
+    "data": [
+        {
+            "titulo": "Índice de Siniestralidad por tipo de vehículo y detalle de siniestros del periodo",
+            "data": [
+                {
+                    "titulo": "Indemnizaciones por muertes pendientes de pago",
+                    "link": "https://www.google.com",
+                },
+                {
+                    "titulo": "Indemnizaciones por muertes pendientes de pago 2",
+                    "link": null,
+                }
+            ]
+        },
+        {
+            "titulo": "Resultado Económico SOAT",
+            "data": [
+                {
+                    "titulo": "Indemnizaciones por muertes pendientes de pago 3",
+                    "link": null,
+                },
+                {
+                    "titulo": "Indemnizaciones por muertes pendientes de pago 4",
+                    "link": null,
+                }
+            ]
+        },
+        {
+            "titulo": "Tarifas y precios unitarios de los servicios de los centros de salud públicos y privados",
+            "data": [
+                {
+                    "titulo": "Indemnizaciones por muertes pendientes de pago 5",
+                    "link": null,
+                },
+                {
+                    "titulo": "Indemnizaciones por muertes pendientes de pago 6",
+                    "link": null,
+                }
+            ]
+        },
+        {
+            "titulo": "Monto de primas cobradas en cada región del país",
+            "data": [
+                {
+                    "titulo": "Indemnizaciones por muertes pendientes de pago 5",
+                    "link": null,
+                },
+                {
+                    "titulo": "Indemnizaciones por muertes pendientes de pago 6",
+                    "link": null,
+                }
+            ]
+        },
+        {
+            "titulo": "Nota Técnica Actuarial",
+            "data": [
+                {
+                    "titulo": "Indemnizaciones por muertes pendientes de pago 5",
+                    "link": null,
+                },
+                {
+                    "titulo": "Indemnizaciones por muertes pendientes de pago 6",
+                    "link": null,
+                }
+            ]
+        },
+        {
+            "titulo": "Reporte de Producción por Región",
+            "data": [
+                {
+                    "titulo": "Indemnizaciones por muertes pendientes de pago 5",
+                    "link": null,
+                },
+                {
+                    "titulo": "Indemnizaciones por muertes pendientes de pago 6",
+                    "link": null,
+                }
+            ]
+        },
+    ]
+}
